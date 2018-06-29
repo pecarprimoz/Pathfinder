@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ShittyAI : MonoBehaviour {
-
+    // Just testing if i didint fuckup git
     public GameObject FrontSensorGameObject;
 
     private SensorLogic FrontSensorLogic;
