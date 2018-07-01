@@ -45,7 +45,7 @@ public class TilemapController : MonoBehaviour {
                 TileMapList[i, j] = new TileSet(i, j, new Vector3(i - TrackMeshRendererBoundsSize.x / 2, 1f, j - TrackMeshRendererBoundsSize.z / 2));
             }
         }
-        Debug.Log(TileMapList);
+        // Debug.Log(TileMapList);
     }
     void Update() {
         //DEBUG
