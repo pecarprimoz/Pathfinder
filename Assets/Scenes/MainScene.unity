@@ -331,6 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FinishLineGameObject: {fileID: 625054856}
   IsPlayerControlled: 0
+  CurrentTilemapController: {fileID: 1942878682}
 --- !u!96 &507428585
 TrailRenderer:
   serializedVersion: 2
@@ -435,6 +436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FrontSensorGameObject: {fileID: 1362469592}
   FinishCubeGameObject: {fileID: 625054856}
+  CurrentTilemapController: {fileID: 1942878682}
 --- !u!1 &625054856
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,7 +536,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &889765239
 Transform:
   m_ObjectHideFlags: 0

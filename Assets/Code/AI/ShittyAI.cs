@@ -4,6 +4,7 @@ public class ShittyAI : MonoBehaviour {
 
     public GameObject FrontSensorGameObject;
     public GameObject FinishCubeGameObject;
+    public TilemapController CurrentTilemapController;
 
     private SensorLogic FrontSensorLogic;
     private MovementController AIMovementController;

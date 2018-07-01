@@ -56,4 +56,20 @@ public class TilemapController : MonoBehaviour {
             Debug.DrawLine(TileMapList[0, i].positionInWorld, new Vector3(TileMapList[0, i].positionInWorld.x + ColumnsWidth, 1, TileMapList[0, i].positionInWorld.z), Color.cyan);
         }
     }
+    public TileSet GetTileSetForPosition(Vector3 position) {
+        float minimumDistance = float.MaxValue;
+        int bi = -1;
+        int bj = -1;
+        for (int i = 0; i < ColumnsWidth; ++i) {
+            for (int j = 0; j < ColumnsHeight; ++j) {
+                float currentDistance = Vector3.Distance(TileMapList[i, j].positionInWorld, position);
+                if (currentDistance < minimumDistance) {
+                    minimumDistance = currentDistance;
+                    bi = i;
+                    bj = j;
+                }
+            }
+        }
+        return TileMapList[bi, bj];
+    }
 }
