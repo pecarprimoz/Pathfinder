@@ -11,12 +11,14 @@ public class MovementController : MonoBehaviour {
     private Rigidbody CurrentGameObjectRigidBody;
 
     void Start() {
-        CurrentGameObjectRigidBody = gameObject.GetComponent<Rigidbody>();
+        CurrentGameObjectRigidBody = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate() {
         HandlePlayerControlls();
     }
+
+    // Movement without tilesets
     public void MoveGameObjectForward() {
         CurrentGameObjectRigidBody.AddForce(transform.forward * CurrentGameObjectMovementSpeed, ForceMode.Force);
     }

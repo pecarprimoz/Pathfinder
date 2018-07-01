@@ -17,6 +17,6 @@ public class SensorLogic : MonoBehaviour {
     }
     void IRSensorSimulation() {
         Physics.Raycast(transform.position, transform.forward, out IRRaycastHit, RayDistance);
-        Debug.Log(IRRaycastHit.distance);
+        // Debug.Log(IRRaycastHit.distance);
     }
 }
