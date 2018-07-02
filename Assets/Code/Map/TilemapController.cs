@@ -26,6 +26,10 @@ public class TilemapController : MonoBehaviour {
         public Vector3 positionInWorld {
             get { return PositionInWorld; }
         }
+
+        public override string ToString() {
+            return string.Format("C: {0} R: {1} POW{2}", Column, Row, PositionInWorld);
+        }
     }
     private Vector3 RoombaDimensions = new Vector3(1, 0.2f, 1);
 
@@ -71,5 +75,16 @@ public class TilemapController : MonoBehaviour {
             }
         }
         return TileMapList[bi, bj];
+    }
+    public Vector3 GetPositionFromTileset(int columnsWidth, int columnsHeight) {
+        if (columnsWidth > ColumnsWidth) {
+            Debug.LogErrorFormat("WARNING, COLUMN WIDTH MISSMATCH GOT {0}, MAX IS {1}",columnsWidth,ColumnsWidth);
+            return new Vector3(0,0,0);
+        }
+        if (columnsHeight > ColumnsHeight) {
+            Debug.LogErrorFormat("WARNING, COLUMN HEIGHT MISSMATCH GOT {0}, MAX IS {1}", columnsHeight, ColumnsHeight);
+            return new Vector3(0, 0, 0);
+        }
+        return TileMapList[columnsWidth, columnsHeight].positionInWorld;
     }
 }

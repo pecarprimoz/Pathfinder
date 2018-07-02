@@ -7,8 +7,9 @@ public class RoombaController : MonoBehaviour {
     public TilemapController CurrentTilemapController;
 
     private Vector3 RoombaStartPosition;
-
+    private Vector3 RoombaMeshRendererBoundsSize;
     void Start() {
+        RoombaMeshRendererBoundsSize = GetComponent<MeshRenderer>().bounds.size;
         RoombaStartPosition = transform.position;
         if (IsPlayerControlled) {
             GetComponent<MovementController>().enabled = true;

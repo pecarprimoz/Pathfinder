@@ -20,10 +20,10 @@ public class MovementController : MonoBehaviour {
 
     // Movement without tilesets
     public void MoveGameObjectForward() {
-        CurrentGameObjectRigidBody.AddForce(transform.forward * CurrentGameObjectMovementSpeed, ForceMode.Force);
+        transform.position += transform.forward * CurrentGameObjectMovementSpeed * Time.deltaTime; 
     }
     public void MoveGameObjectBackwards() {
-        CurrentGameObjectRigidBody.AddForce(-transform.forward * CurrentGameObjectMovementSpeed, ForceMode.Force);
+        transform.position += -transform.forward * CurrentGameObjectMovementSpeed * Time.deltaTime;
     }
     public void RotateGameObjectLeft() {
         EulerFloatVariable -= Time.deltaTime * CurrentGameObjectRotationSpeed;
