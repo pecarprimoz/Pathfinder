@@ -1,81 +1,115 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class ShittyAI : MonoBehaviour {
-
-    public GameObject FrontSensorGameObject;
-    public GameObject FinishLineGameObject;
-    public TilemapController CurrentTilemapController;
-
     public enum MovementAction { kMoveForward, kMoveBackwards, kRotateLeft, kRotateRight };
 
-    private SensorLogic FrontSensorLogic;
-    private MovementController AIMovementController;
+    public class MovementCommand {
+        // Tells us what type of movement we are executing
+        private MovementAction CurrentMovementAction;
+        // A flag for the AI, need to know if we are done moving
+        private bool IsBeingExecuted;
+        // The start position when the command got called
+        private Vector3 StartPosition;
+        // The end position we want to reach
+        private Vector3 EndPosition;
 
-    private bool RotatingLeft = false;
-    private bool RotatingRight = false;
+        // StatRow and StartColumn represent our position on the tilemap
+        private int StartRow = -1;
+        private int StartColumn = -1;
+        // NumberOfTiles define how much we are gonna move
+        private int NumberOfTiles;
 
-    private float CurrentDistanceFromFinish = float.MaxValue;
-
-    private Vector3 RoombaStartPosition;
-    private Vector3 PreviousPosition;
-    private Vector3 RoombaMeshRendererBoundsSize;
-
-    private int StartRow;
-    private bool IsMoving;
-    private int StartColumn;
-    
-    void Start() {
-        StartRow = -1;
-        StartColumn = -1;
-        IsMoving = false;
-        RoombaMeshRendererBoundsSize = GetComponent<MeshRenderer>().bounds.size;
-        RoombaStartPosition = transform.position;
-        PreviousPosition = RoombaStartPosition;
-        FrontSensorLogic = FrontSensorGameObject.GetComponent<SensorLogic>();
-        AIMovementController = GetComponent<MovementController>();
-    }
-
-    private bool WillHitWall() {
-        return FrontSensorLogic.IRRaycastHit.distance < 1f && FrontSensorLogic.IRRaycastHit.distance != 0;
-    }
-
-    void CheckDistanceFromGoal() {
-        CurrentDistanceFromFinish = Vector3.Distance(transform.position, FinishLineGameObject.transform.position);
-    }
-
-    void Update() {
-        Debug.Log(CurrentTilemapController.GetTileSetForPosition(transform.position));
-    }
-    public void MoveRoomba(MovementAction movement, int tiles) {
-        IsMoving = true;
-        switch (movement) {
-            case MovementAction.kMoveForward:
-                TileMoveForward(tiles);
-                break;
-            case MovementAction.kMoveBackwards:
-                break;
-            default:
-                break;
+        // TODO, implement tileset movement based on start and end pos
+        // will need an algorithm that can resolve the best path based on the vectors
+        public MovementCommand(MovementAction movementAction,Vector3 startPosition, Vector3 endPosition) {
+            IsBeingExecuted = true;
+            CurrentMovementAction = movementAction;
+            StartPosition = startPosition;
+            EndPosition = endPosition;
         }
-    }
 
-    void TileMoveForward(int numOftiles) {
-        TilemapController.TileSet currentPositionTileSet = CurrentTilemapController.GetTileSetForPosition(transform.position);
-        if (StartRow == -1 && StartColumn == -1) {
-            StartRow = currentPositionTileSet.row;
-            StartColumn = currentPositionTileSet.column;
+        public MovementCommand(MovementAction movementAction, Vector3 startPosition, int numberOfTiles) {
+            IsBeingExecuted = true;
+            CurrentMovementAction = movementAction;
+            StartPosition = startPosition;
+            NumberOfTiles = numberOfTiles;
         }
-        if (!WillHitWall()) {
-            if (IsMoving) {
-                if (currentPositionTileSet.row != StartRow + numOftiles &&
-                    currentPositionTileSet.column != StartColumn + numOftiles) {
-                    AIMovementController.MoveGameObjectForward();
+
+        public MovementAction currentMovementAction {
+            get { return CurrentMovementAction; }
+            set { CurrentMovementAction = value; }
+        }
+
+        public bool isBeingExecuted { get { return IsBeingExecuted; } }
+
+        // We check if its possible to hit the wall based on the sensor
+        private bool WillHitWall(SensorLogic sensorLogic) {
+            return sensorLogic.IRRaycastHit.distance < 1f && sensorLogic.IRRaycastHit.distance != 0;
+        }
+
+
+        public void TileMoveForward(TilemapController tilemapController, Transform transform, MovementController movementController,SensorLogic sensorLogic) {
+            // StartRow and StartColumn get initialised when it first enters the function, they represent our position in the tilemap
+            TilemapController.TileSet currentPositionTileSet = tilemapController.GetTileSetForPosition(transform.position);
+            if (StartRow == -1 && StartColumn == -1) {
+                StartRow = currentPositionTileSet.row;
+                StartColumn = currentPositionTileSet.column;
+            }
+            // First we check if its possible to hit the wall based on our position
+            if (!WillHitWall(sensorLogic)) {
+                // Then we check if our current position is not the same as our end position, this is used for tilebased movement, THIS MIGHT NOT BE RIGHT, PROLLY NEED TO SPLIT THE ROW AND COLUMN CHECKS !
+                if (currentPositionTileSet.row != StartRow + NumberOfTiles &&
+                    currentPositionTileSet.column != StartColumn + NumberOfTiles) {
+                    // If its okay, we can move the game object forward
+                    movementController.MoveGameObjectForward();
                 } else {
-                    StartRow = -2;
-                    StartColumn = -2;
-                    IsMoving = false;
+                    // We are on our end position, we can stop exectuing the current comman, flag to tell the AI that we are done with this command
+                    IsBeingExecuted = false;
                 }
+            } else {
+                // If we are gonna hit a wall we need to tell the ai that we wont execute this command
+                IsBeingExecuted = false;
             }
         }
     }
+
+    public TilemapController CurrentTilemapController;
+    public SensorLogic CurrentSensorLogic;
+
+    // CommandQueue is used to tell the AI how to move
+    private Queue CommandQueue;
+    // Current command that is being executed, need for update
+    private MovementCommand ExectuingCommand = null;
+    private MovementController CurrentMovementController;
+
+    void Start() {
+        CurrentMovementController = GetComponent<MovementController>();
+        CommandQueue = new Queue();
+        // TESTING //
+        CommandQueue.Enqueue(new MovementCommand(MovementAction.kMoveForward,transform.position,1));
+    }
+
+    void Update() {
+        if (ExectuingCommand != null) {
+            if (ExectuingCommand.isBeingExecuted) {
+                ExecuteCommand();
+            } else {
+                ExectuingCommand = null;
+            }
+        } else {
+            if (CommandQueue.Count > 0) {
+                ExectuingCommand = (MovementCommand)CommandQueue.Dequeue();
+            }
+        }
+    }
+
+    private void ExecuteCommand() {
+        switch (ExectuingCommand.currentMovementAction) {
+            case (MovementAction.kMoveForward):
+                ExectuingCommand.TileMoveForward(CurrentTilemapController, transform, CurrentMovementController, CurrentSensorLogic);
+                break;
+        }
+    }
+
 }

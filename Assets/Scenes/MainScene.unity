@@ -434,9 +434,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3abb418599fbc449bfff7478728f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FrontSensorGameObject: {fileID: 1362469592}
-  FinishLineGameObject: {fileID: 0}
   CurrentTilemapController: {fileID: 1942878682}
+  CurrentSensorLogic: {fileID: 1362469597}
 --- !u!1 &625054856
 GameObject:
   m_ObjectHideFlags: 0
