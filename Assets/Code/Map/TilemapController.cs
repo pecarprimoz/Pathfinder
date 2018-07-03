@@ -32,35 +32,39 @@ public class TilemapController : MonoBehaviour {
         }
     }
     private Vector3 RoombaDimensions = new Vector3(1, 0.2f, 1);
-
-    private int ColumnsWidth;
-    private int ColumnsHeight;
+    private int Columns;
+    private int Rows;
     private Vector3 TrackMeshRendererBoundsSize;
-
+    private Vector3 ParentOffset;
     public TileSet[,] TileMapList;
 
     void Start() {
+        ParentOffset = GetComponentInParent<Transform>().transform.position;
         TrackMeshRendererBoundsSize = GetComponent<MeshRenderer>().bounds.size;
-        ColumnsWidth = (int)(TrackMeshRendererBoundsSize.x / RoombaDimensions.x);
-        ColumnsHeight = (int)(TrackMeshRendererBoundsSize.z / RoombaDimensions.z);
-        TileMapList = new TileSet[ColumnsWidth, ColumnsHeight];
-        for (int i = 0; i < ColumnsWidth; ++i) {
-            for (int j = 0; j < ColumnsHeight; ++j) {
-                TileMapList[i, j] = new TileSet(i, j, new Vector3(i - TrackMeshRendererBoundsSize.x / 2, 1f, j - TrackMeshRendererBoundsSize.z / 2));
+        Columns = (int)(TrackMeshRendererBoundsSize.x / RoombaDimensions.x);
+        Rows = (int)(TrackMeshRendererBoundsSize.z / RoombaDimensions.z);
+        TileMapList = new TileSet[Columns, Rows];
+        
+        for (int i = 0; i < Columns; ++i) {
+            for (int j = 0; j < Rows; ++j) {
+                // note for myself since i wont remember wtf is going on here
+                // since the world is displayed in 1 by 1 sizes we can get away with just adding columns and rows, we need to remove bounds size/2 because the center of gameobjects in unity is in the center, but we want it in the bottom left
+                TileMapList[i, j] = new TileSet(i, j, new Vector3(transform.position.x+i - TrackMeshRendererBoundsSize.x / 2, 1f, transform.position.z + j - TrackMeshRendererBoundsSize.z / 2));
             }
         }
         // Debug.Log(TileMapList);
     }
     void Update() {
         //DEBUG
-        for (int i = 0; i < ColumnsWidth; i++) {
-            Debug.DrawLine(TileMapList[i, 0].positionInWorld, new Vector3(TileMapList[i, 0].positionInWorld.x, 1, TileMapList[i, 0].positionInWorld.z + ColumnsHeight), Color.red);
+        for (int i = 0; i < Columns; i++) {
+            Debug.DrawLine(TileMapList[i, 0].positionInWorld, new Vector3(TileMapList[i, 0].positionInWorld.x, 1, TileMapList[i, 0].positionInWorld.z + Rows), Color.red);
         }
-        for (int i = 0; i < ColumnsHeight; i++) {
-            Debug.DrawLine(TileMapList[0, i].positionInWorld, new Vector3(TileMapList[0, i].positionInWorld.x + ColumnsWidth, 1, TileMapList[0, i].positionInWorld.z), Color.cyan);
+        for (int i = 0; i < Rows; i++) {
+            Debug.DrawLine(TileMapList[0, i].positionInWorld, new Vector3(TileMapList[0, i].positionInWorld.x + Columns, 1, TileMapList[0, i].positionInWorld.z), Color.cyan);
         }
     }
     public TileSet GetTileSetForPosition(Vector3 position) {
+        /*
         float minimumDistance = float.MaxValue;
         int bi = -1;
         int bj = -1;
@@ -75,14 +79,25 @@ public class TilemapController : MonoBehaviour {
             }
         }
         return TileMapList[bi, bj];
+        */
+        // lmao i can just use this thanks math
+        int currentZ = (int)Mathf.Floor(position.z);
+        int currentX = (int)Mathf.Floor(position.x);
+        if (currentZ < Rows) {
+            if(currentX < Columns){ 
+                return TileMapList[(int)position.x, (int)position.z];
+            }
+        }
+        Debug.LogErrorFormat("ERROR, INDICIES MISSTMATCH, FOR X GOT {0}, MAX IS {1}; FOR Z GOT {2}, MAX IS {3}", currentX, Columns, currentZ, Rows);
+        return null;
     }
     public Vector3 GetPositionFromTileset(int columnsWidth, int columnsHeight) {
-        if (columnsWidth > ColumnsWidth) {
-            Debug.LogErrorFormat("WARNING, COLUMN WIDTH MISSMATCH GOT {0}, MAX IS {1}",columnsWidth,ColumnsWidth);
+        if (columnsWidth > Columns) {
+            Debug.LogErrorFormat("ERROR, COLUMN WIDTH MISSMATCH GOT {0}, MAX IS {1}",columnsWidth,Columns);
             return new Vector3(0,0,0);
         }
-        if (columnsHeight > ColumnsHeight) {
-            Debug.LogErrorFormat("WARNING, COLUMN HEIGHT MISSMATCH GOT {0}, MAX IS {1}", columnsHeight, ColumnsHeight);
+        if (columnsHeight > Rows) {
+            Debug.LogErrorFormat("ERROR, COLUMN HEIGHT MISSMATCH GOT {0}, MAX IS {1}", columnsHeight, Rows);
             return new Vector3(0, 0, 0);
         }
         return TileMapList[columnsWidth, columnsHeight].positionInWorld;

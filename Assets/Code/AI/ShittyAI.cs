@@ -22,7 +22,7 @@ public class ShittyAI : MonoBehaviour {
 
         // TODO, implement tileset movement based on start and end pos
         // will need an algorithm that can resolve the best path based on the vectors
-        public MovementCommand(MovementAction movementAction,Vector3 startPosition, Vector3 endPosition) {
+        public MovementCommand(MovementAction movementAction, Vector3 startPosition, Vector3 endPosition) {
             IsBeingExecuted = true;
             CurrentMovementAction = movementAction;
             StartPosition = startPosition;
@@ -44,14 +44,21 @@ public class ShittyAI : MonoBehaviour {
         public bool isBeingExecuted { get { return IsBeingExecuted; } }
 
         // We check if its possible to hit the wall based on the sensor
-        private bool WillHitWall(SensorLogic sensorLogic) {
-            return sensorLogic.IRRaycastHit.distance < 1f && sensorLogic.IRRaycastHit.distance != 0;
+        private bool WillHitWall(SensorLogic[] sensorLogic) {
+            for(int i=0; i<sensorLogic.Length; ++i){
+                if (sensorLogic[i].IRRaycastHit.distance < 1f && sensorLogic[i].IRRaycastHit.distance != 0) {
+                    Debug.LogWarningFormat("Sensor {0} returned true !",i);
+                    return true;
+                }
+            }
+            return false;
         }
 
 
-        public void TileMoveForward(TilemapController tilemapController, Transform transform, MovementController movementController,SensorLogic sensorLogic) {
+        public void TileMoveForward(TilemapController tilemapController, Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
             // StartRow and StartColumn get initialised when it first enters the function, they represent our position in the tilemap
             TilemapController.TileSet currentPositionTileSet = tilemapController.GetTileSetForPosition(transform.position);
+            if (currentPositionTileSet == null) { IsBeingExecuted = false; return; }
             if (StartRow == -1 && StartColumn == -1) {
                 StartRow = currentPositionTileSet.row;
                 StartColumn = currentPositionTileSet.column;
@@ -72,10 +79,35 @@ public class ShittyAI : MonoBehaviour {
                 IsBeingExecuted = false;
             }
         }
+
+        public void TileMoveBackwards(TilemapController tilemapController, Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
+
+            TilemapController.TileSet currentPositionTileSet = tilemapController.GetTileSetForPosition(transform.position);
+            if (currentPositionTileSet == null) { IsBeingExecuted = false; return; }
+            if (StartRow == -1 && StartColumn == -1) {
+                StartRow = currentPositionTileSet.row;
+                StartColumn = currentPositionTileSet.column;
+            }
+            if (!WillHitWall(sensorLogic)) {
+                if (currentPositionTileSet.row != StartRow - NumberOfTiles &&
+                    currentPositionTileSet.column != StartColumn - NumberOfTiles) {
+                    movementController.MoveGameObjectBackwards();
+                } else {
+                    IsBeingExecuted = false;
+                }
+            } else {
+                IsBeingExecuted = false;
+            }
+        }
+
+        public void TileRotateRight(TilemapController tilemapController, Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
+
+        }
+
     }
 
     public TilemapController CurrentTilemapController;
-    public SensorLogic CurrentSensorLogic;
+    public SensorLogic[] AllSensorsLogic;
 
     // CommandQueue is used to tell the AI how to move
     private Queue CommandQueue;
@@ -87,7 +119,12 @@ public class ShittyAI : MonoBehaviour {
         CurrentMovementController = GetComponent<MovementController>();
         CommandQueue = new Queue();
         // TESTING //
-        CommandQueue.Enqueue(new MovementCommand(MovementAction.kMoveForward,transform.position,1));
+        /*
+        */
+        //CommandQueue.Enqueue(new MovementCommand(MovementAction.kMoveForward, transform.position, 1));
+        //CommandQueue.Enqueue(new MovementCommand(MovementAction.kMoveForward, transform.position, 4));
+        //CommandQueue.Enqueue(new MovementCommand(MovementAction.kMoveBackwards, transform.position, 4));
+        CommandQueue.Enqueue(new MovementCommand(MovementAction.kRotateRight, transform.position, 1));
     }
 
     void Update() {
@@ -107,7 +144,13 @@ public class ShittyAI : MonoBehaviour {
     private void ExecuteCommand() {
         switch (ExectuingCommand.currentMovementAction) {
             case (MovementAction.kMoveForward):
-                ExectuingCommand.TileMoveForward(CurrentTilemapController, transform, CurrentMovementController, CurrentSensorLogic);
+                ExectuingCommand.TileMoveForward(CurrentTilemapController, transform, CurrentMovementController, AllSensorsLogic);
+                break;
+            case (MovementAction.kMoveBackwards):
+                ExectuingCommand.TileMoveBackwards(CurrentTilemapController, transform, CurrentMovementController, AllSensorsLogic);
+                break;
+            case (MovementAction.kRotateRight):
+                ExectuingCommand.TileMoveBackwards(CurrentTilemapController, transform, CurrentMovementController, AllSensorsLogic);
                 break;
         }
     }
