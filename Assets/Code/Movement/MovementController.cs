@@ -7,11 +7,14 @@ public class MovementController : MonoBehaviour {
     public float CurrentGameObjectMovementSpeed = 0.0f;
     public float CurrentGameObjectRotationSpeed = 0.0f;
 
-    private float EulerFloatVariable = 0;
-    private Rigidbody CurrentGameObjectRigidBody;
+    private float ObjectYRotation = 0;
+
+    public float objectYRotation {
+        get { return ObjectYRotation; }
+    }
 
     void Start() {
-        CurrentGameObjectRigidBody = GetComponent<Rigidbody>();
+        ObjectYRotation = transform.rotation.eulerAngles.y;
     }
 
     void FixedUpdate() {
@@ -26,12 +29,12 @@ public class MovementController : MonoBehaviour {
         transform.position += -transform.forward * CurrentGameObjectMovementSpeed * Time.deltaTime;
     }
     public void RotateGameObjectLeft() {
-        EulerFloatVariable -= 1;
-        gameObject.transform.rotation = Quaternion.Euler(0.0f, EulerFloatVariable, 0.0f);
+        ObjectYRotation -= 1;
+        gameObject.transform.rotation = Quaternion.Euler(0.0f, ObjectYRotation, 0.0f);
     }
     public void RotateGameObjectRight() {
-        EulerFloatVariable += 1;
-        gameObject.transform.rotation = Quaternion.Euler(0.0f, EulerFloatVariable, 0.0f);
+        ObjectYRotation += 1;
+        gameObject.transform.rotation = Quaternion.Euler(0.0f, ObjectYRotation, 0.0f);
     }
 
     void HandlePlayerControlls() {

@@ -6,7 +6,7 @@ public abstract class MovementCommand {
 
     protected bool IsBeingExecuted = false;
 
-    protected readonly Vector3 StartPosition = Vector3.zero;
+    protected Vector3 StartPosition = Vector3.zero;
 
     protected Vector3 EndPosition = Vector3.zero;
 
@@ -17,13 +17,18 @@ public abstract class MovementCommand {
     protected MovementCommand(Vector3 startPosition, TilemapController tilemapController) {
         StartPosition = startPosition;
         TilemapController = tilemapController;
-        TilemapController.TileSet currentPositionTileSet = tilemapController.GetTileSetForPosition(startPosition);
+        TileSet currentPositionTileSet = tilemapController.GetTileSetForPosition(startPosition);
         if (currentPositionTileSet == null) {
             // DEBUG ERROR
             return;
         }
         StartColumn = currentPositionTileSet.column;
         StartRow = currentPositionTileSet.row;
+    }
+
+    public Vector3 startPosition {
+        get { return StartPosition; }
+        set { StartPosition = value; }
     }
 
     public bool isBeingExecuted { get { return IsBeingExecuted; } }
@@ -39,13 +44,3 @@ public abstract class MovementCommand {
     }
     public abstract void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic);
 }
-/*
- * 
- *  switch (ExectuingCommand.currentMovementAction) {
-            case (MovementAction.kMoveForward):
-                ExectuingCommand.TileMoveForward(CurrentTilemapController, transform, CurrentMovementController, AllSensorsLogic);
-                break;
-            case (MovementAction.kMoveBackwards):
-                ExectuingCommand.TileMoveBackwards(CurrentTilemapController, transform, CurrentMovementController, AllSensorsLogic);
-                break;
-*/

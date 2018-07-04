@@ -15,6 +15,12 @@ public partial class ShittyAI : MonoBehaviour {
         CurrentMovementController = GetComponent<MovementController>();
         CommandQueue = new Queue<MovementCommand>();
         CommandQueue.Enqueue(new MovementMove(transform.position,CurrentTilemapController,1, MovementMove.EnumDirection.kForward));
+        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
+        CommandQueue.Enqueue(new MovementRotation(transform.position, CurrentTilemapController, 90, MovementRotation.EnumRotation.kRight));
+        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
+        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
+        CommandQueue.Enqueue(new MovementRotation(transform.position, CurrentTilemapController, 90, MovementRotation.EnumRotation.kLeft));
+        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
     }
 
     void Update() {
@@ -27,6 +33,9 @@ public partial class ShittyAI : MonoBehaviour {
         } else {
             if (CommandQueue.Count > 0) {
                 ExectuingCommand = CommandQueue.Dequeue();
+                ExectuingCommand.startPosition = transform.position;
+            } else {
+
             }
         }
     }

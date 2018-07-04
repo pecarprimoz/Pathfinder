@@ -18,28 +18,27 @@ public class MovementMove : MovementCommand {
 
     public void TileMoveForward(Transform currentTransform, MovementController movementController, SensorLogic[] sensorLogic) {
         // StartRow and StartColumn get initialised when it first enters the function, they represent our position in the tilemap
-        TilemapController.TileSet currentPositionTileSet = TilemapController.GetTileSetForPosition(currentTransform.position);
+        TileSet currentPositionTileSet = TilemapController.GetTileSetForPosition(currentTransform.position);
 
         // First we check if its possible to hit the wall based on our position
         if (!WillHitWall(sensorLogic)) {
             // Then we check if our current position is not the same as our end position, this is used for tilebased movement, THIS MIGHT NOT BE RIGHT, PROLLY NEED TO SPLIT THE ROW AND COLUMN CHECKS !
-            if (currentPositionTileSet.row != StartRow + NumberOfTiles &&
-                currentPositionTileSet.column != StartColumn + NumberOfTiles) {
+            if (currentPositionTileSet.row != StartRow + NumberOfTiles) {
                 // If its okay, we can move the game object forward
                 movementController.MoveGameObjectForward();
-            } else {
-                // We are on our end position, we can stop exectuing the current comman, flag to tell the AI that we are done with this command
-                IsBeingExecuted = false;
+                return;
+            } else if (currentPositionTileSet.column != StartColumn + NumberOfTiles) {
+                // If its okay, we can move the game object forward
+                movementController.MoveGameObjectForward();
+                return;
             }
-        } else {
-            // If we are gonna hit a wall we need to tell the ai that we wont execute this command
-            IsBeingExecuted = false;
         }
+        IsBeingExecuted = false;
     }
 
     public void TileMoveBackwards(Transform currentTransform, MovementController movementController, SensorLogic[] sensorLogic) {
 
-        TilemapController.TileSet currentPositionTileSet = TilemapController.GetTileSetForPosition(currentTransform.position);
+        TileSet currentPositionTileSet = TilemapController.GetTileSetForPosition(currentTransform.position);
         if (currentPositionTileSet == null) { IsBeingExecuted = false; return; }
 
         if (!WillHitWall(sensorLogic)) {
@@ -57,7 +56,7 @@ public class MovementMove : MovementCommand {
     public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
         switch (Direction) {
             case (EnumDirection.kForward):
-                TileMoveForward(transform,movementController,sensorLogic);
+                TileMoveForward(transform, movementController, sensorLogic);
                 break;
             case (EnumDirection.kBack):
                 TileMoveBackwards(transform, movementController, sensorLogic);
