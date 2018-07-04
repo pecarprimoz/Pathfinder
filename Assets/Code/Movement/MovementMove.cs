@@ -4,65 +4,39 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class MovementMove : MovementCommand {
-    public enum EnumDirection { kForward, kBack };
+public class MovementMove : MovementCommand
+{
+    private float MovementSpeed = 1.0f;
+    private float MovementLength;
 
-    private int NumberOfTiles;
-    private EnumDirection Direction;
-
-    public MovementMove(Vector3 startPosition, TilemapController tilemapController, int numberOfTiles, EnumDirection direction) : base(startPosition, tilemapController) {
+    public MovementMove(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController) : base(startPosition, endPosition, tilemapController)
+    {
         IsBeingExecuted = true;
-        NumberOfTiles = numberOfTiles;
-        Direction = direction;
+        MovementLength = Vector3.Distance(StartPosition.positionInWorldWithOffset, EndPosition.positionInWorldWithOffset);
     }
 
-    public void TileMoveForward(Transform currentTransform, MovementController movementController, SensorLogic[] sensorLogic) {
-        // StartRow and StartColumn get initialised when it first enters the function, they represent our position in the tilemap
-        TileSet currentPositionTileSet = TilemapController.GetTileSetForPosition(currentTransform.position);
+    public MovementMove(int startColumn, int startRow, int endColumn, int endRow, TilemapController tilemapController) : base(startColumn, startRow, endColumn, endRow, tilemapController)
+    {
+        IsBeingExecuted = true;
+        MovementLength = Vector3.Distance(StartPosition.positionInWorldWithOffset, EndPosition.positionInWorldWithOffset);
+    }
 
-        // First we check if its possible to hit the wall based on our position
-        if (!WillHitWall(sensorLogic)) {
-            // Then we check if our current position is not the same as our end position, this is used for tilebased movement, THIS MIGHT NOT BE RIGHT, PROLLY NEED TO SPLIT THE ROW AND COLUMN CHECKS !
-            if (currentPositionTileSet.row != StartRow + NumberOfTiles) {
-                // If its okay, we can move the game object forward
-                movementController.MoveGameObjectForward();
-                return;
-            } else if (currentPositionTileSet.column != StartColumn + NumberOfTiles) {
-                // If its okay, we can move the game object forward
-                movementController.MoveGameObjectForward();
-                return;
-            }
+    public void Move(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
+    {
+        if (transform.position != EndPosition.positionInWorldWithOffset)
+        {
+            MovementTime += Time.deltaTime * MovementSpeed;
+            transform.position = Vector3.Lerp(StartPosition.positionInWorldWithOffset, EndPosition.positionInWorldWithOffset, MovementTime / MovementLength);
         }
-        IsBeingExecuted = false;
-    }
-
-    public void TileMoveBackwards(Transform currentTransform, MovementController movementController, SensorLogic[] sensorLogic) {
-
-        TileSet currentPositionTileSet = TilemapController.GetTileSetForPosition(currentTransform.position);
-        if (currentPositionTileSet == null) { IsBeingExecuted = false; return; }
-
-        if (!WillHitWall(sensorLogic)) {
-            if (currentPositionTileSet.row != StartRow - NumberOfTiles &&
-                currentPositionTileSet.column != StartColumn - NumberOfTiles) {
-                movementController.MoveGameObjectBackwards();
-            } else {
-                IsBeingExecuted = false;
-            }
-        } else {
+        else
+        {
             IsBeingExecuted = false;
         }
     }
 
-    public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
-        switch (Direction) {
-            case (EnumDirection.kForward):
-                TileMoveForward(transform, movementController, sensorLogic);
-                break;
-            case (EnumDirection.kBack):
-                TileMoveBackwards(transform, movementController, sensorLogic);
-                break;
-            default:
-                break;
-        }
+
+    public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
+    {
+        Move(transform, movementController, sensorLogic);
     }
 }

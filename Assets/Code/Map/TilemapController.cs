@@ -20,7 +20,7 @@ public class TilemapController : MonoBehaviour {
             for (int j = 0; j < Rows; ++j) {
                 // note for myself since i wont remember wtf is going on here
                 // since the world is displayed in 1 by 1 sizes we can get away with just adding columns and rows, we need to remove bounds size/2 because the center of gameobjects in unity is in the center, but we want it in the bottom left
-                TileMapList[i, j] = new TileSet(i, j, new Vector3(transform.position.x + i - TrackMeshRendererBoundsSize.x / 2, 1f, transform.position.z + j - TrackMeshRendererBoundsSize.z / 2));
+                TileMapList[i, j] = new TileSet(i, j, RoombaDimensions.x / 2, new Vector3(transform.position.x + i - TrackMeshRendererBoundsSize.x / 2, 1f, transform.position.z + j - TrackMeshRendererBoundsSize.z / 2));
             }
         }
         // Debug.Log(TileMapList);
@@ -34,7 +34,7 @@ public class TilemapController : MonoBehaviour {
             Debug.DrawLine(TileMapList[0, i].positionInWorld, new Vector3(TileMapList[0, i].positionInWorld.x + Columns, 1, TileMapList[0, i].positionInWorld.z), Color.cyan);
         }
     }
-    public TileSet GetTileSetForPosition(Vector3 position) {
+    public TileSet GetTileSetFromPosition(Vector3 position) {
         // lmao i can just use this thanks math
         int currentZ = (int)Mathf.Floor(position.z);
         int currentX = (int)Mathf.Floor(position.x);
@@ -45,14 +45,14 @@ public class TilemapController : MonoBehaviour {
         }
         return null;
     }
-    public Vector3? GetPositionFromTileset(int columns, int rows) {
+    public TileSet GetTileSetFromColRow(int columns, int rows) {
         if (!CheckColumns(columns)) {
             return null;
         }
         if (!CheckRows(rows)) {
             return null;
         }
-        return TileMapList[columns, rows].positionInWorld;
+        return TileMapList[columns, rows];
     }
 
     private bool CheckColumns(int col) {

@@ -4,44 +4,18 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class MovementRotation : MovementCommand {
-    public enum EnumRotation { kLeft, kRight };
-    private float RotationEuler;
-    private EnumRotation Direction;
-
-    public MovementRotation(Vector3 startPosition, TilemapController tilemapController, float rotationEuler, EnumRotation direction) : base(startPosition, tilemapController) {
-        IsBeingExecuted = true;
-        RotationEuler = rotationEuler;
-        Direction = direction;
+public class MovementRotation : MovementCommand
+{
+    protected MovementRotation(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController) : base(startPosition, endPosition, tilemapController)
+    {
     }
 
-    public void RotateLeft(Transform currentTransform, MovementController movementController, SensorLogic[] sensorLogic) {
-        if (currentTransform.rotation.eulerAngles.y != RotationEuler) {
-            movementController.RotateGameObjectLeft();
-        } else {
-            IsBeingExecuted = false;
-        }
+    protected MovementRotation(int startColumn, int startRow, int endColumn, int endRow, TilemapController tilemapController) : base(startColumn, startRow, endColumn, endRow, tilemapController)
+    {
     }
 
-    public void RotateRight(Transform currentTransform, MovementController movementController, SensorLogic[] sensorLogic) {
-        if (currentTransform.rotation.eulerAngles.y != RotationEuler) {
-            movementController.RotateGameObjectRight();
-        } else {
-            IsBeingExecuted = false;
-        }
-    }
-
-
-    public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
-        switch (Direction) {
-            case (EnumRotation.kLeft):
-                RotateLeft(transform, movementController, sensorLogic);
-                break;
-            case (EnumRotation.kRight):
-                RotateRight(transform, movementController, sensorLogic);
-                break;
-            default:
-                break;
-        }
+    public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,41 +1,51 @@
 ﻿using UnityEngine;
 
 public enum MovementType { kMove, kRotate };
-public abstract class MovementCommand {
+public abstract class MovementCommand
+{
     protected TilemapController TilemapController;
 
     protected bool IsBeingExecuted = false;
 
-    protected Vector3 StartPosition = Vector3.zero;
+    protected TileSet StartPosition;
+    protected TileSet EndPosition;
 
-    protected Vector3 EndPosition = Vector3.zero;
+    protected float MovementTime = 0.0f;
 
-    // StatRow and StartColumn represent our position on the tilemap
-    protected readonly int StartRow = -1;
-    protected readonly int StartColumn = -1;
-
-    protected MovementCommand(Vector3 startPosition, TilemapController tilemapController) {
-        StartPosition = startPosition;
+    protected MovementCommand(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController)
+    {
         TilemapController = tilemapController;
-        TileSet currentPositionTileSet = tilemapController.GetTileSetForPosition(startPosition);
-        if (currentPositionTileSet == null) {
+        StartPosition = tilemapController.GetTileSetFromPosition(startPosition);
+        EndPosition = tilemapController.GetTileSetFromPosition(startPosition);
+
+        if (StartPosition == null || EndPosition == null)
+        {
             // DEBUG ERROR
             return;
         }
-        StartColumn = currentPositionTileSet.column;
-        StartRow = currentPositionTileSet.row;
     }
 
-    public Vector3 startPosition {
-        get { return StartPosition; }
-        set { StartPosition = value; }
+    protected MovementCommand(int startColumn, int startRow, int endColumn, int endRow, TilemapController tilemapController)
+    {
+        TilemapController = tilemapController;
+        StartPosition = tilemapController.GetTileSetFromColRow(startColumn,startRow);
+        EndPosition = tilemapController.GetTileSetFromColRow(endColumn, endRow);
+
+        if (StartPosition == null || EndPosition == null)
+        {
+            // DEBUG ERROR
+            return;
+        }
     }
 
     public bool isBeingExecuted { get { return IsBeingExecuted; } }
 
-    protected bool WillHitWall(SensorLogic[] sensorLogic) {
-        for (int i = 0; i < sensorLogic.Length; ++i) {
-            if (sensorLogic[i].IRRaycastHit.distance < 1f && sensorLogic[i].IRRaycastHit.distance != 0) {
+    protected bool WillHitWall(SensorLogic[] sensorLogic)
+    {
+        for (int i = 0; i < sensorLogic.Length; ++i)
+        {
+            if (sensorLogic[i].IRRaycastHit.distance < 1f && sensorLogic[i].IRRaycastHit.distance != 0)
+            {
                 Debug.LogWarningFormat("Sensor {0} returned true !", i);
                 return true;
             }

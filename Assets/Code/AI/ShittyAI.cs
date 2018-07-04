@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public partial class ShittyAI : MonoBehaviour {
+public partial class ShittyAI : MonoBehaviour
+{
     public TilemapController CurrentTilemapController;
     public SensorLogic[] AllSensorsLogic;
 
@@ -11,36 +12,39 @@ public partial class ShittyAI : MonoBehaviour {
     private MovementCommand ExectuingCommand = null;
     private MovementController CurrentMovementController;
 
-    void Start() {
+    void Start()
+    {
         CurrentMovementController = GetComponent<MovementController>();
         CommandQueue = new Queue<MovementCommand>();
-        CommandQueue.Enqueue(new MovementMove(transform.position,CurrentTilemapController,1, MovementMove.EnumDirection.kForward));
-        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
-        CommandQueue.Enqueue(new MovementRotation(transform.position, CurrentTilemapController, 90, MovementRotation.EnumRotation.kRight));
-        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
-        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
-        CommandQueue.Enqueue(new MovementRotation(transform.position, CurrentTilemapController, 90, MovementRotation.EnumRotation.kLeft));
-        CommandQueue.Enqueue(new MovementMove(transform.position, CurrentTilemapController, 1, MovementMove.EnumDirection.kForward));
+        CommandQueue.Enqueue(new MovementMove(0, 0, 0, 5, CurrentTilemapController));
+        CommandQueue.Enqueue(new MovementMove(0, 5, 3, 8, CurrentTilemapController));
+
     }
 
-    void Update() {
-        if (ExectuingCommand != null) {
-            if (ExectuingCommand.isBeingExecuted) {
+    void Update()
+    {
+        if (ExectuingCommand != null)
+        {
+            if (ExectuingCommand.isBeingExecuted)
+            {
                 ExecuteCommand();
-            } else {
+            }
+            else
+            {
                 ExectuingCommand = null;
             }
-        } else {
-            if (CommandQueue.Count > 0) {
+        }
+        else
+        {
+            if (CommandQueue.Count > 0)
+            {
                 ExectuingCommand = CommandQueue.Dequeue();
-                ExectuingCommand.startPosition = transform.position;
-            } else {
-
             }
         }
     }
 
-    private void ExecuteCommand() {
+    private void ExecuteCommand()
+    {
         ExectuingCommand.Execute(transform, CurrentMovementController, AllSensorsLogic);
     }
 }
