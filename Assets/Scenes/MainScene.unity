@@ -402,7 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FinishLineGameObject: {fileID: 625054856}
   IsPlayerControlled: 0
-  CurrentTilemapController: {fileID: 1942878682}
+  CurrentTilemapController: {fileID: 0}
 --- !u!96 &507428585
 TrailRenderer:
   serializedVersion: 2

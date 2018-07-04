@@ -83,23 +83,23 @@ public class TilemapController : MonoBehaviour {
         // lmao i can just use this thanks math
         int currentZ = (int)Mathf.Floor(position.z);
         int currentX = (int)Mathf.Floor(position.x);
-        if (currentZ < Rows) {
-            if(currentX < Columns){ 
+        if (currentZ < Rows && currentZ >= 0) {
+            if(currentX < Columns && currentX >= 0){ 
                 return TileMapList[(int)position.x, (int)position.z];
             }
         }
         Debug.LogErrorFormat("ERROR, INDICIES MISSTMATCH, FOR X GOT {0}, MAX IS {1}; FOR Z GOT {2}, MAX IS {3}", currentX, Columns, currentZ, Rows);
         return null;
     }
-    public Vector3 GetPositionFromTileset(int columnsWidth, int columnsHeight) {
-        if (columnsWidth > Columns) {
-            Debug.LogErrorFormat("ERROR, COLUMN WIDTH MISSMATCH GOT {0}, MAX IS {1}",columnsWidth,Columns);
+    public Vector3 GetPositionFromTileset(int columns, int rows) {
+        if (columns > Columns) {
+            Debug.LogErrorFormat("ERROR, COLUMN WIDTH MISSMATCH GOT {0}, MAX IS {1}",columns,Columns);
             return new Vector3(0,0,0);
         }
-        if (columnsHeight > Rows) {
-            Debug.LogErrorFormat("ERROR, COLUMN HEIGHT MISSMATCH GOT {0}, MAX IS {1}", columnsHeight, Rows);
+        if (rows > Rows) {
+            Debug.LogErrorFormat("ERROR, COLUMN HEIGHT MISSMATCH GOT {0}, MAX IS {1}", rows, Rows);
             return new Vector3(0, 0, 0);
         }
-        return TileMapList[columnsWidth, columnsHeight].positionInWorld;
+        return TileMapList[columns, rows].positionInWorld;
     }
 }

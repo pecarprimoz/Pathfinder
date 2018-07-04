@@ -26,11 +26,11 @@ public class MovementController : MonoBehaviour {
         transform.position += -transform.forward * CurrentGameObjectMovementSpeed * Time.deltaTime;
     }
     public void RotateGameObjectLeft() {
-        EulerFloatVariable -= Time.deltaTime * CurrentGameObjectRotationSpeed;
+        EulerFloatVariable -= 1;
         gameObject.transform.rotation = Quaternion.Euler(0.0f, EulerFloatVariable, 0.0f);
     }
     public void RotateGameObjectRight() {
-        EulerFloatVariable += Time.deltaTime * CurrentGameObjectRotationSpeed;
+        EulerFloatVariable += 1;
         gameObject.transform.rotation = Quaternion.Euler(0.0f, EulerFloatVariable, 0.0f);
     }
 
