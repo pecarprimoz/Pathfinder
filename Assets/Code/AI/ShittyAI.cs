@@ -16,8 +16,11 @@ public partial class ShittyAI : MonoBehaviour
     {
         CurrentMovementController = GetComponent<MovementController>();
         CommandQueue = new Queue<MovementCommand>();
-        CommandQueue.Enqueue(new MovementMove(0, 0, 0, 5, CurrentTilemapController));
-        CommandQueue.Enqueue(new MovementMove(0, 5, 3, 8, CurrentTilemapController));
+        CommandQueue.Enqueue(new MovementMove(0, 0, 3, 0, CurrentTilemapController));
+        var quat = new Quaternion();
+        quat.eulerAngles = new Vector3(0, 90, 0);
+        CommandQueue.Enqueue(new MovementRotation(transform.rotation, quat, CurrentTilemapController));
+        var current = CurrentTilemapController.GetTileSetFromPosition(transform.position);
 
     }
 

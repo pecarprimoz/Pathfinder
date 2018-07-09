@@ -17,7 +17,7 @@ public abstract class MovementCommand
         TilemapController = tilemapController;
         StartPosition = tilemapController.GetTileSetFromPosition(startPosition);
         EndPosition = tilemapController.GetTileSetFromPosition(startPosition);
-
+        
         if (StartPosition == null || EndPosition == null)
         {
             // DEBUG ERROR
@@ -36,6 +36,10 @@ public abstract class MovementCommand
             // DEBUG ERROR
             return;
         }
+    }
+
+    protected MovementCommand(Quaternion startRotation, Quaternion endRotation, TilemapController tilemapController) {
+        TilemapController = tilemapController;
     }
 
     public bool isBeingExecuted { get { return IsBeingExecuted; } }

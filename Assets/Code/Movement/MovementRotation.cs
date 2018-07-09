@@ -6,16 +6,29 @@ using UnityEngine;
 
 public class MovementRotation : MovementCommand
 {
-    protected MovementRotation(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController) : base(startPosition, endPosition, tilemapController)
-    {
+    private float RotationSpeed = 1.0f;
+
+    protected Quaternion StartRotation;
+    protected Quaternion EndRotation;
+    // how do quaterions work
+    public MovementRotation(Quaternion startRotation, Quaternion endRotation, TilemapController tilemapController) : base(startRotation, endRotation, tilemapController) {
+        StartRotation = startRotation;
+        EndRotation = endRotation;
+        IsBeingExecuted = true;
     }
 
-    protected MovementRotation(int startColumn, int startRow, int endColumn, int endRow, TilemapController tilemapController) : base(startColumn, startRow, endColumn, endRow, tilemapController)
-    {
+    public void Rotate(Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
+        if (transform.rotation != EndRotation) {
+            MovementTime += Time.deltaTime * RotationSpeed;
+            transform.rotation = Quaternion.Slerp(StartRotation, EndRotation, MovementTime);
+
+        } else {
+            IsBeingExecuted = false;
+        }
     }
 
     public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
     {
-        throw new NotImplementedException();
+        Rotate(transform, movementController, sensorLogic);
     }
 }

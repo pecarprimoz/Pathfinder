@@ -56,14 +56,14 @@ public class TilemapController : MonoBehaviour {
     }
 
     private bool CheckColumns(int col) {
-        if (col > Columns || col < 0) {
+        if (col >= Columns || col < 0) {
             Debug.LogErrorFormat("ERROR, COLUMN MISSMATCH GOT {0}, MAX IS {1}, MIN IS 0", col, Columns);
             return false;
         }
         return true;
     }
     private bool CheckRows(int row) {
-        if (row > Rows || row < 0) {
+        if (row >= Rows || row < 0) {
             Debug.LogErrorFormat("ERROR, ROW MISSMATCH GOT {0}, MAX IS {1}", row, Rows);
             return false;
         }
