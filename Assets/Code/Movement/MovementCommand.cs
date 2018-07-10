@@ -10,8 +10,6 @@ public abstract class MovementCommand
     protected TileSet StartPosition;
     protected TileSet EndPosition;
 
-    protected float MovementTime = 0.0f;
-    protected float RotationTime = 0.0f;
 
     protected MovementCommand(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController)
     {

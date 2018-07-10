@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MovementRotation : MovementCommand
 {
+    private float RotationTime = 0.0f;
     private float RotationSpeed = .5f;
     private Vector3 CurrentEulerAngles = new Vector3(-1.0f, -1.0f, -1.0f);
 

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class MovementMove : MovementCommand
 {
+    private float MovementTime = 0.0f;
     private float MovementSpeed = 2.0f;
     private float MovementLength;
 
