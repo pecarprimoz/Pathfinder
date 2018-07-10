@@ -11,6 +11,7 @@ public abstract class MovementCommand
     protected TileSet EndPosition;
 
     protected float MovementTime = 0.0f;
+    protected float RotationTime = 0.0f;
 
     protected MovementCommand(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController)
     {
@@ -36,10 +37,6 @@ public abstract class MovementCommand
             // DEBUG ERROR
             return;
         }
-    }
-
-    protected MovementCommand(Quaternion startRotation, Quaternion endRotation, TilemapController tilemapController) {
-        TilemapController = tilemapController;
     }
 
     public bool isBeingExecuted { get { return IsBeingExecuted; } }

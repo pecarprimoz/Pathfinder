@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MovementMove : MovementCommand
 {
-    private float MovementSpeed = 5.0f;
+    private float MovementSpeed = 2.0f;
     private float MovementLength;
 
     public MovementMove(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController) : base(startPosition, endPosition, tilemapController)

@@ -6,22 +6,23 @@ using UnityEngine;
 
 public class MovementRotation : MovementCommand
 {
-    private float RotationSpeed = 1.0f;
+    private float RotationSpeed = .5f;
+    private Vector3 CurrentEulerAngles = new Vector3(-1.0f, -1.0f, -1.0f);
 
-    protected Quaternion StartRotation;
-    protected Quaternion EndRotation;
-    // how do quaterions work
-    public MovementRotation(Quaternion startRotation, Quaternion endRotation, TilemapController tilemapController) : base(startRotation, endRotation, tilemapController) {
-        StartRotation = startRotation;
-        EndRotation = endRotation;
+    public MovementRotation(Vector3 startPosition, Vector3 endPosition, TilemapController tilemapController) : base(startPosition, endPosition, tilemapController) {
+        IsBeingExecuted = true;
+    }
+
+    public MovementRotation(int startColumn, int startRow, int endColumn, int endRow, TilemapController tilemapController) : base(startColumn, startRow, endColumn, endRow, tilemapController) {
         IsBeingExecuted = true;
     }
 
     public void Rotate(Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
-        if (transform.rotation != EndRotation) {
-            MovementTime += Time.deltaTime * RotationSpeed;
-            transform.rotation = Quaternion.Slerp(StartRotation, EndRotation, MovementTime);
-
+        if (CurrentEulerAngles!= transform.eulerAngles) {
+            CurrentEulerAngles = transform.eulerAngles;
+            RotationTime += Time.deltaTime * RotationSpeed;
+            var lookAtPoint = EndPosition.positionInWorldWithOffset;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookAtPoint - transform.position), RotationTime);
         } else {
             IsBeingExecuted = false;
         }
