@@ -8,9 +8,6 @@ public class SensorLogic : MonoBehaviour {
     public RaycastHit IRRaycastHit;
     private float RayDistance = 1.5f;
 
-    void Start() {
-    }
-
     void Update() {
         Debug.DrawRay(transform.position, transform.forward * RayDistance, Color.red);
         IRSensorSimulation();

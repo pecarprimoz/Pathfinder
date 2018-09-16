@@ -20,6 +20,7 @@ public partial class ShittyAI : MonoBehaviour {
 
     void Searching() {
         // This is gonna be replaced with the A* algorithm once I implement it
+        /*
         CommandQueue.Enqueue(new MovementRotation(0, 0, 1, 0, CurrentTilemapController));
         CommandQueue.Enqueue(new MovementMove(0, 0, 1, 0, CurrentTilemapController));
 
@@ -50,6 +51,7 @@ public partial class ShittyAI : MonoBehaviour {
         CommandQueue.Enqueue(new MovementRotation(4, 3, 4, 4, CurrentTilemapController));
         CommandQueue.Enqueue(new MovementMove(4, 3, 4, 4, CurrentTilemapController));
         CurrentState = State.kMoving;
+        */
     }
     void Moving() {
         if (ExectuingCommand != null) {

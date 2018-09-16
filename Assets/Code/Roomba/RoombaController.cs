@@ -2,16 +2,18 @@
 
 public class RoombaController : MonoBehaviour {
 
-    public GameObject FinishLineGameObject;
     public bool IsPlayerControlled;
     public TilemapController CurrentTilemapController;
 
     void Start() {
+        // Set the controls
         if (IsPlayerControlled) {
             GetComponent<MovementController>().enabled = true;
         } else {
             GetComponent<ShittyAI>().enabled = true;
         }
+        // Set the starting position
+        gameObject.transform.position = CurrentTilemapController.StartTile.positionInWorldWithOffset;
     }
 	
 	void Update () {
