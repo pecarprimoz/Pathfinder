@@ -6,12 +6,15 @@ public class TileSet {
     // We need the world position aswell
     private Vector3 PositionInWorld;
     private float Offset;
+    public float Value;
+    public bool Visited = false;
 
     public TileSet(int column, int row, float offset, Vector3 positionInWorld) {
         Column = column;
         Row = row;
         PositionInWorld = positionInWorld;
         Offset = offset;
+        Value = -1;
     }
     public int column {
         get { return (int)Column; }
@@ -34,4 +37,5 @@ public class TileSet {
     public override string ToString() {
         return string.Format("C: {0} R: {1} POW{2}", Column, Row, PositionInWorld);
     }
+
 }
