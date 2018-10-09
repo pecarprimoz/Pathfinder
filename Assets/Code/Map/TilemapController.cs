@@ -10,7 +10,7 @@ public class TilemapController : MonoBehaviour {
 
     public TileSet StartTile;
     public TileSet FinishTile;
-    public TileSet[,] TileMapList;
+    private TileSet[,] TileMapList;
     public Queue<TileSet> ClosedTileMapList;
     public Queue<TileSet> OpenTileMapList;
 
@@ -84,13 +84,20 @@ public class TilemapController : MonoBehaviour {
         StartTile.Visited = true;
     }
 
-    public void SetVisited(int col, int row) {
-
+    public void ClearTileMap() {
+        for (int i = 0; i < Columns; ++i) {
+            for (int j = 0; j < Rows; ++j) {
+                // note for myself since i wont remember wtf is going on here
+                // since the world is displayed in 1 by 1 sizes we can get away with just adding columns and rows, we need to remove bounds size/2 because the center of gameobjects in unity is in the center, but we want it in the bottom left
+                TileMapList[i, j].Visited = false;
+            }
+        }
     }
 
     public void SetFinishTile() {
         //(int)Random.Range(0, Columns), (int)Random.Range(0, Rows)
-        FinishTile = TileMapList[Columns - 1, Rows - 1];
+        //FinishTile = TileMapList[Columns - 1, Rows - 1];
+        FinishTile = TileMapList[(int)Random.Range(0, Columns), (int)Random.Range(0, Rows)];
     }
 
     public void GenerateValuesForTileMap() {
@@ -147,5 +154,9 @@ public class TilemapController : MonoBehaviour {
 
     public float CalculateDistance(TileSet a, TileSet b) {
         return Mathf.Abs(a.positionInWorld.x - b.positionInWorld.x) + Mathf.Abs(a.positionInWorld.z - a.positionInWorld.z);
+    }
+
+    public void SetVisited(int col, int row){
+        TileMapList[col, row].Visited = true;
     }
 }

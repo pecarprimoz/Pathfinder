@@ -15,6 +15,9 @@ public class RoombaController : MonoBehaviour {
         // Set the starting position
         gameObject.transform.position = CurrentTilemapController.StartTile.positionInWorldWithOffset;
     }
+    public TileSet GetCurrentRoombaTileSet(){ 
+        return CurrentTilemapController.GetTileSetFromPosition(transform.position);
+    }
 	
 	void Update () {
         // Debug.LogFormat("X{0} Z{1}", CurrentTilemapController.GetTileSetForPosition(transform.position).column, CurrentTilemapController.GetTileSetForPosition(transform.position).row);
