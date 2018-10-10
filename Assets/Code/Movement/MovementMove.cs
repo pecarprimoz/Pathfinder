@@ -18,7 +18,7 @@ public class MovementMove : MovementCommand
         MovementLength = Vector3.Distance(StartPosition.positionInWorldWithOffset, EndPosition.positionInWorldWithOffset);
     }
 
-    public void Move(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
+    public void Move(Transform transform, MovementController movementController)
     {
         if (transform.position != EndPosition.positionInWorldWithOffset)
         {
@@ -32,8 +32,8 @@ public class MovementMove : MovementCommand
     }
 
 
-    public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
+    public override void Execute(Transform transform, MovementController movementController)
     {
-        Move(transform, movementController, sensorLogic);
+        Move(transform, movementController);
     }
 }

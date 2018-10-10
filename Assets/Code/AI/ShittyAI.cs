@@ -2,11 +2,8 @@
 using UnityEngine;
 
 public partial class ShittyAI : MonoBehaviour {
-    private enum State { kSeaching, kMoving, kRotating }
     public TilemapController CurrentTilemapController;
-    public SensorLogic[] AllSensorsLogic;
     public RoombaController CurrentRoombaController;
-    private State CurrentState;
     // CommandQueue is used to tell the AI how to move
     private Queue<MovementCommand> CommandQueue;
     // Current command that is being executed, need for update
@@ -25,8 +22,6 @@ public partial class ShittyAI : MonoBehaviour {
 
         // generate best possible path by greedy method
         GenerateBestPath();
-
-        CurrentState = State.kSeaching;
     }
 
     void Searching() {
@@ -36,7 +31,7 @@ public partial class ShittyAI : MonoBehaviour {
             TileSet currentMove = ClosedTileSetList.Dequeue();
             var currentRoombaTileSet = CurrentRoombaController.GetCurrentRoombaTileSet();
             CommandQueue.Enqueue(new MovementMove(currentRoombaTileSet.column, currentRoombaTileSet.row, currentMove.column, currentMove.row, CurrentTilemapController));
-            CurrentState = State.kMoving;
+            CurrentRoombaController.CurrentState = State.kMoving;
         } else {
             CurrentTilemapController.ClearTileMap();
             CurrentTilemapController.SetFinishTile();
@@ -60,7 +55,7 @@ public partial class ShittyAI : MonoBehaviour {
     }
 
     void Update() {
-        switch (CurrentState) {
+        switch (CurrentRoombaController.CurrentState) {
             case State.kSeaching:
                 Searching();
                 break;
@@ -76,7 +71,7 @@ public partial class ShittyAI : MonoBehaviour {
     }
 
     private void ExecuteCommand() {
-        ExectuingCommand.Execute(transform, CurrentMovementController, AllSensorsLogic);
+        ExectuingCommand.Execute(transform, CurrentMovementController);
     }
 
     public void GenerateBestPath() {

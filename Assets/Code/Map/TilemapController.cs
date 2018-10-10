@@ -43,7 +43,7 @@ public class TilemapController : MonoBehaviour {
         }
     }
     public TileSet GetTileSetFromPosition(Vector3 position) {
-        // may be an issue if we dont use tilemap movements
+        // may be an issue if we dont use tilemap mopv
         foreach (TileSet tileSet in TileMapList) {
             if (tileSet.positionInWorldWithOffset == position) {
                 return tileSet;

@@ -9,6 +9,11 @@ public class TileSet {
     public float Value;
     public bool Visited = false;
 
+    // Note to self
+    // PositionInWorld presents the Unity position
+    // PositionInWorldWithOffset presents how the roomba moves in the world
+    // We want tileset movement, so we need to keep in mind the size of the object moving in the tilemap
+
     public TileSet(int column, int row, float offset, Vector3 positionInWorld) {
         Column = column;
         Row = row;

@@ -14,7 +14,7 @@ public class MovementRotation : MovementCommand
         IsBeingExecuted = true;
     }
 
-    public void Rotate(Transform transform, MovementController movementController, SensorLogic[] sensorLogic) {
+    public void Rotate(Transform transform, MovementController movementController) {
         if (CurrentEulerAngles!= transform.eulerAngles) {
             CurrentEulerAngles = transform.eulerAngles;
             RotationTime += Time.deltaTime * RotationSpeed;
@@ -25,8 +25,8 @@ public class MovementRotation : MovementCommand
         }
     }
 
-    public override void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic)
+    public override void Execute(Transform transform, MovementController movementController)
     {
-        Rotate(transform, movementController, sensorLogic);
+        Rotate(transform, movementController);
     }
 }

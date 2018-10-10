@@ -6,6 +6,7 @@ using UnityEngine;
 public class SensorLogic : MonoBehaviour {
 
     public RaycastHit IRRaycastHit;
+    public bool IsColliding = false;
     private float RayDistance = 1.5f;
 
     void Update() {

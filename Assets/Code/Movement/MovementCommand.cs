@@ -38,18 +38,6 @@ public abstract class MovementCommand
     }
 
     public bool isBeingExecuted { get { return IsBeingExecuted; } }
-
-    protected bool WillHitWall(SensorLogic[] sensorLogic)
-    {
-        for (int i = 0; i < sensorLogic.Length; ++i)
-        {
-            if (sensorLogic[i].IRRaycastHit.distance < 1f && sensorLogic[i].IRRaycastHit.distance != 0)
-            {
-                Debug.LogWarningFormat("Sensor {0} returned true !", i);
-                return true;
-            }
-        }
-        return false;
-    }
-    public abstract void Execute(Transform transform, MovementController movementController, SensorLogic[] sensorLogic);
+    
+    public abstract void Execute(Transform transform, MovementController movementController);
 }
