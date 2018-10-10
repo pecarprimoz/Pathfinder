@@ -43,14 +43,13 @@ public class TilemapController : MonoBehaviour {
         }
     }
     public TileSet GetTileSetFromPosition(Vector3 position) {
-        // lmao i can just use this thanks math
-        int currentZ = (int)Mathf.Floor(position.z);
-        int currentX = (int)Mathf.Floor(position.x);
-        if (CheckRows(currentZ)) {
-            if (CheckColumns(currentX)) {
-                return TileMapList[(int)position.x, (int)position.z];
+        // may be an issue if we dont use tilemap movements
+        foreach (TileSet tileSet in TileMapList) {
+            if (tileSet.positionInWorldWithOffset == position) {
+                return tileSet;
             }
         }
+        Debug.LogErrorFormat("COULD NOT FIND VALID TILE");
         return null;
     }
     public TileSet GetTileSetFromColRow(int columns, int rows) {
@@ -156,7 +155,7 @@ public class TilemapController : MonoBehaviour {
         return Mathf.Abs(a.positionInWorld.x - b.positionInWorld.x) + Mathf.Abs(a.positionInWorld.z - a.positionInWorld.z);
     }
 
-    public void SetVisited(int col, int row){
+    public void SetVisited(int col, int row) {
         TileMapList[col, row].Visited = true;
     }
 }
